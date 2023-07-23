@@ -12,6 +12,7 @@ async function loginUser(e){
         document.getElementById('passid').value='';
         const res= await axios.post('http://localhost:3000/user/login',loginUser);
         if(res.status===200){
+            localStorage.setItem('token',res.data.token)
             alert(res.data.message);
             // window.location.href=""
         }

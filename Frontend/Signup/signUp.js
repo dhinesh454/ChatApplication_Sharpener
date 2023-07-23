@@ -19,12 +19,7 @@ async function createUser(e){
          alert(res.data.message)
          window.location.href='../Login/login.html'
      }
-     else if(res.status===202){
-        alert(res.data.message)
-     }
-
-
-     
+      
     } catch (error) {
         alert(error.response.data.message);
         console.log(error);

@@ -1,5 +1,8 @@
 const User=require('../models/user');
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcrypt');
+
+
+const userService=require('../services/userservice')
 
 const isstringinvalid=(string)=>
 {
@@ -17,11 +20,12 @@ const isstringinvalid=(string)=>
 
 
 
+
+
 //After Signup
 const postSignup=async (req,res,next)=>{
 
     const {name,email,phonenumber,password}=req.body;
-    console.log('comesSign up');
     try {
        
         if(isstringinvalid(name)||isstringinvalid(email)||isstringinvalid(phonenumber)||isstringinvalid(password)){
@@ -31,7 +35,7 @@ const postSignup=async (req,res,next)=>{
         const user=await User.findOne({where:{email}});
         console.log(user);
         if(user){
-            return res.status(202).json({success:false,message:"Users Email or User Already Exist"})
+            return res.status(404).json({success:false,message:"Users Email or User Already Exist"})
         }
         if(user==null){
              let saltRound=10;
@@ -55,7 +59,6 @@ const postSignup=async (req,res,next)=>{
 
 //After Login
 const postLogin=async (req,res,next)=>{
-    console.log('>>>>> comes post login');
     const {email,password}=req.body;
     console.log(email,password);
     try {
@@ -63,7 +66,6 @@ const postLogin=async (req,res,next)=>{
             return res.status(400).json({message:'Some field is missing or inappropriate',success:false})
         }
         const user=await User.findOne({where:{email:email}});
-        console.log('.......>>>>>>>>',user);
         if(user){
             bcrypt.compare(password,user.password,(err,result)=>{
                 if(err){
@@ -71,10 +73,10 @@ const postLogin=async (req,res,next)=>{
                     return res.status(500).json({success:false,message:"Something Went wrong"})
                 }
                 if(result==true){
-                    res.status(200).json({message:'successfully user login',success:true})
+                    res.status(200).json({message:'successfully user login',success:true,token:userService.generateAccesswebtoken(user.id,user.name)})
                 }
                 else{
-                    res.status(400).json({success:false,message:"Check password incorrect"})
+                    res.status(401).json({success:false,message:"Check password incorrect"})
                 }
             })
 
