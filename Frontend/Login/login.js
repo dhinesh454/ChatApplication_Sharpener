@@ -14,7 +14,7 @@ async function loginUser(e){
         if(res.status===200){
             localStorage.setItem('token',res.data.token)
             alert(res.data.message);
-            // window.location.href=""
+            window.location.href="../Chatapp/chatapp.html"
         }
     
         

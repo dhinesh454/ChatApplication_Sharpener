@@ -10,6 +10,9 @@ require('dotenv').config()
 
 const sequelize=require('./utils/database');
 const userRoutes=require('./routes/user');
+const User=require('./models/user');
+const Message=require('./models/chatapp');
+
 
 
 
@@ -22,6 +25,17 @@ app.use(bodyParser.json());
 
 
 app.use('/user',userRoutes)
+
+
+
+
+
+
+//relationship
+User.hasMany(Message);
+Message.belongsTo(User);
+
+
 
 
 sequelize.sync()
