@@ -41,6 +41,28 @@
             margin-bottom:5px ;
 
         }
+        #chat-messages
+        {
+            display:flex;
+            flex-direction: column;
+            position: relative;
+            margin:20px 100px;
+            padding:10px
+
+        
+        }
+
+        li{
+            list-style: none;
+            padding: 5px;
+         }
+
+         li:nth-child(odd)
+        {
+          background-color:rgb(210, 204, 204);
+         
+        }
+
 
     </style>
 </head>
@@ -54,7 +76,7 @@
         </div>
         <div id="user-input">
             <input type="text" placeholder="Type your message" id="message-input">
-            <button id="send-button" class="btn btn-success" onclick="userMessage(event)">Send</button>
+            <button id="send-button" class="btn btn-success" onclick="userMessagestore(event)">Send</button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

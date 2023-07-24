@@ -61,6 +61,10 @@ const postSignup=async (req,res,next)=>{
 
 
 
+
+
+
+
 //After Login
 const postLogin=async (req,res,next)=>{
     const {email,password}=req.body;

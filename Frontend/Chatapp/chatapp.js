@@ -1,4 +1,5 @@
-async function userMessage(event){
+async function userMessagestore(event){
+    console.log('');
     event.preventDefault();
  try {
        const token=localStorage.getItem('token')
@@ -10,7 +11,7 @@ async function userMessage(event){
 
        if(res.status===200){
         console.log(res.data.newMessage);
-        showMessageonscreen(res.data.newMessage,res.data.name);
+        showMessageonscreen(res.data.newMessage);
 
        }
 
@@ -25,10 +26,22 @@ async function userMessage(event){
 };
 
 
-function showMessageonscreen(msg,name){
-    console.log(msg,name);
+
+async function userMessage(allMessages){
     const parentNode=document.getElementById('chat-messages');
-    const chilNode=`<li>${name}:${msg.message}</li>`
+    parentNode.innerHTML='';
+    console.log(allMessages);
+    for(i in allMessages){
+        showMessageonscreen(allMessages[i])
+    }
+
+}
+
+
+function showMessageonscreen(user){
+
+    const parentNode=document.getElementById('chat-messages');
+    const chilNode=`<li>${user.name}:${user.message}</li>`
     parentNode.innerHTML+=chilNode;
 };
 
@@ -43,9 +56,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     console.log(res.data.allMessages);
     const messages=res.data.allMessages
     if(res.status===202){
-    for(let i in messages){
-        showMessageonscreen(messages[i],res.data.name)
-    }
+        userMessage(res.data.allMessages)
     }
 
     
@@ -55,3 +66,23 @@ window.addEventListener('DOMContentLoaded',async()=>{
                               </div>`
   }
 })
+
+async function callApi(){
+    const token=localStorage.getItem('token');
+    try {
+      const res=await axios.get('http://localhost:3000/user/getmessages',{headers:{"Authorization":token}});
+      console.log(res.data.allMessages);
+      if(res.status===202){
+          userMessage(res.data.allMessages)
+      }
+  
+      
+    } catch (error) {
+      document.body.innerHTML+=`<div style="color: red;text-align: center;">
+                                      <h3>${error}</h3>
+                                </div>`
+    }
+
+}
+
+setInterval(callApi,1000);

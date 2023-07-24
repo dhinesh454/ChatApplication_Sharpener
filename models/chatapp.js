@@ -10,7 +10,8 @@ const Message=sequelize.define('message',{
         primaryKey:true,
         unique:true
     },
-    message:Sequelize.STRING
+    message:Sequelize.STRING,
+    name:Sequelize.STRING
 })
 
 module.exports=Message;

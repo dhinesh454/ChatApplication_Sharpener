@@ -5,7 +5,7 @@ const Message=require('../models/chatapp');
 const postMesage=async (req,res,next)=>{
     const {message}=req.body;
     try {
-        const data=await Message.create({message,userId:req.user.id});
+        const data=await Message.create({message,name:req.user.name,userId:req.user.id});
         res.status(200).json({newMessage:data,name:req.user.name,success:true});
         
     } catch (error) {
@@ -16,9 +16,9 @@ const postMesage=async (req,res,next)=>{
 
 const getMessages=async(req,res,next)=>{
    try {
-         const data=await Message.findAll({where:{userId:req.user.id}});
+         const data=await Message.findAll();
          console.log(data);
-         res.status(202).json({allMessages:data,name:req.user.name,success:true})
+         res.status(202).json({allMessages:data,success:true})
    } catch (error) {
         console.log(JSON.stringify(error));
         res.status(500).json({error})
