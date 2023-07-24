@@ -86,7 +86,7 @@ const postLogin=async (req,res,next)=>{
 
         }
         if(user==null){
-               return  res.status(404).json({success:false,message:"Users Not Found"})
+               return  res.status(404).json({success:false,message:"Users Not Found please Signup"})
           }
 
         
