@@ -2,8 +2,12 @@ const User=require('../models/user');
 const bcrypt=require('bcrypt');
 
 
-const userService=require('../services/userservice')
+const userService=require('../services/userservice');
 
+
+
+
+//validation
 const isstringinvalid=(string)=>
 {
    if(string== undefined ||string.length===0) 
