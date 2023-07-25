@@ -1,6 +1,6 @@
 const User=require('../models/user');
 const Message=require('../models/chatapp');
-
+const {Op}=require('sequelize')
 
 const postMesage=async (req,res,next)=>{
     const {message}=req.body;
@@ -15,8 +15,16 @@ const postMesage=async (req,res,next)=>{
 }
 
 const getMessages=async(req,res,next)=>{
+        const msgId=req.query.lastmessageid;
+        console.log('>>>>msgid',msgId);
    try {
-         const data=await Message.findAll();
+         const data=await Message.findAll({
+            where:{
+                id:{
+            [Op.gt]:msgId
+        }
+    }
+});
          console.log(data);
          res.status(202).json({allMessages:data,success:true})
    } catch (error) {

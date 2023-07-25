@@ -50,13 +50,39 @@ function showMessageonscreen(user){
 //domcontent
 
 window.addEventListener('DOMContentLoaded',async()=>{
-  const token=localStorage.getItem('token');
+  
+    let concatedArray;
+    const token=localStorage.getItem('token');
+    let message=JSON.parse(localStorage.getItem('Allmessages'));
+    console.log(message);
+    if(message==null||message.length==0||message==undefined) lastmessageid=0;
+    else lastmessageid=message[message.length-1].id
+
   try {
-    const res=await axios.get('http://localhost:3000/user/getmessages',{headers:{"Authorization":token}});
+    const res=await axios.get(`http://localhost:3000/user/getmessages?lastmessageid=${lastmessageid}`,{headers:{"Authorization":token}});
     console.log(res.data.allMessages);
-    const messages=res.data.allMessages
+   
     if(res.status===202){
-        userMessage(res.data.allMessages)
+       const backendArray=res.data.allMessages;
+      if(message==null||message==undefined||message.length==0){
+        concatedArray=[...backendArray]
+        console.log(concatedArray);
+      }
+      else{
+        concatedArray=message.concat(backendArray)
+        console.log(concatedArray);
+      }
+
+      if(concatedArray.length>10){
+        concatedArray=concatedArray.slice(concatedArray.length-10)
+      }
+      console.log(concatedArray);
+
+      const localstorageMessage=JSON.stringify(concatedArray);
+      localStorage.setItem('Allmessages',localstorageMessage);
+
+      userMessage(concatedArray);
+     
     }
 
     
@@ -67,22 +93,22 @@ window.addEventListener('DOMContentLoaded',async()=>{
   }
 })
 
-async function callApi(){
-    const token=localStorage.getItem('token');
-    try {
-      const res=await axios.get('http://localhost:3000/user/getmessages',{headers:{"Authorization":token}});
-      console.log(res.data.allMessages);
-      if(res.status===202){
-          userMessage(res.data.allMessages)
-      }
+// async function callApi(){
+//     const token=localStorage.getItem('token');
+//     try {
+//       const res=await axios.get('http://localhost:3000/user/getmessages',{headers:{"Authorization":token}});
+//       console.log(res.data.allMessages);
+//       if(res.status===202){
+//           userMessage(res.data.allMessages)
+//       }
   
       
-    } catch (error) {
-      document.body.innerHTML+=`<div style="color: red;text-align: center;">
-                                      <h3>${error}</h3>
-                                </div>`
-    }
+//     } catch (error) {
+//       document.body.innerHTML+=`<div style="color: red;text-align: center;">
+//                                       <h3>${error}</h3>
+//                                 </div>`
+//     }
 
-}
+// }
 
-setInterval(callApi,1000);
+// setInterval(callApi,1000);
