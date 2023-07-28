@@ -1,51 +1,17 @@
 
 
+
+
 //domcontent
 
 window.addEventListener('DOMContentLoaded',async()=>{
     dispalyGroupLeft();
     loadchats();
-  //   let concatedArray;
-  //   const token=localStorage.getItem('token');
-  //   let message=JSON.parse(localStorage.getItem('Allmessages'));
-  //   console.log(message);
-  //   if(message==null||message.length==0||message==undefined) lastmessageid=0;
-  //   else lastmessageid=message[message.length-1].id
-
-  // try {
-  //   const res=await axios.get(`http://localhost:3000/chat/getmessages?lastmessageid=${lastmessageid}`,{headers:{"Authorization":token}});
-  //   console.log(res.data.allMessages);
-   
-  //   if(res.status===202){
-  //      const backendArray=res.data.allMessages;
-  //     if(message==null||message==undefined||message.length==0){
-  //       concatedArray=[...backendArray]
-  //       console.log(concatedArray);
-  //     }
-  //     else{
-  //       concatedArray=message.concat(backendArray)
-  //       console.log(concatedArray);
-  //     }
-
-  //     if(concatedArray.length>10){
-  //       concatedArray=concatedArray.slice(concatedArray.length-10)
-  //     }
-  //     console.log(concatedArray);
-
-  //     const localstorageMessage=JSON.stringify(concatedArray);
-  //     localStorage.setItem('Allmessages',localstorageMessage);
-
-  //     userMessage(concatedArray);
-     
-    // }
-
-    
-  // } catch (error) {
-  //   document.body.innerHTML+=`<div style="color: red;text-align: center;">
-  //                                   <h3>${error}</h3>
-  //                             </div>`
-  // }
+  
 })
+
+
+
 
 
 
@@ -58,6 +24,9 @@ function parseJwt (token) {
 
   return JSON.parse(jsonPayload);
 }
+
+
+
 
 
 
@@ -85,6 +54,9 @@ try {
 }
 
 
+
+
+
 function showMessageDiv(msg){
     let parentNode=document.getElementById('messageDiv');
     parentNode.innerHTML=`<p>${msg}</p>`
@@ -94,6 +66,9 @@ function showMessageDiv(msg){
     },3000)
 
 }
+
+
+
 
 
 
@@ -108,6 +83,8 @@ async function getAllgroups(){
                               </div>`
   }
 }
+
+
 
 
 
@@ -180,6 +157,8 @@ async function dispalyGroupLeft(){
 
 
 
+
+
 async function addMembers(e){
   e.preventDefault();
   const memberEmail=prompt('Enter Member Email')
@@ -203,6 +182,9 @@ async function addMembers(e){
     showMessageDiv(error.response.data.msg)
   }
 }
+
+
+
 
 
 
@@ -236,6 +218,9 @@ async function RemoveMember(e){
 
 
 
+
+
+
 async function changeAdmin(e){
   e.preventDefault();
   const memberEmail=prompt('Enter Member Email You want to remove')
@@ -263,6 +248,9 @@ async function changeAdmin(e){
 
 
 
+
+
+
 async function removeGroup(e){
   e.preventDefault();
   try {
@@ -283,6 +271,9 @@ async function removeGroup(e){
 
 
 
+
+
+
 async function groupchatpage(e){
   e.preventDefault();
   let groupId=e.target.parentElement.getAttribute('groupId');
@@ -292,6 +283,10 @@ async function groupchatpage(e){
   loadchats();
 
 }
+
+
+
+
 
 
 async function loadchats(){
@@ -309,6 +304,11 @@ try {
 }
 
 }
+
+
+
+
+
 
 async function displayChats(allgroupchats){
   try {
@@ -336,6 +336,10 @@ async function displayChats(allgroupchats){
   }
 }
 
+
+
+
+
 async function userMessagestore(event){
   event.preventDefault();
   try {
@@ -355,6 +359,10 @@ async function userMessagestore(event){
   }
 }
 
+
+
+
+
 function showpostmsg(newMsg){
   console.log(newMsg);
   const token = localStorage.getItem('token');
@@ -368,3 +376,58 @@ function showpostmsg(newMsg){
   }
   chats.appendChild(newPara);
 }
+ 
+
+
+
+
+
+async function setintervalgroupmsg(){
+    let concatedArray;
+    const token=localStorage.getItem('token');
+    const groupId=localStorage.getItem('currentGroupId');
+    let message=JSON.parse(localStorage.getItem(`AllGroupMessages-${groupId}`));
+    console.log(message);
+    if(message==null||message.length==0||message==undefined) lastmessageid=0;
+    else lastmessageid=message[message.length-1].id
+
+  try {
+    const res=await axios.get(`http://localhost:3000/chat/getmessages/${groupId}?lastmessageid=${lastmessageid}`,{headers:{"Authorization":token}});
+    console.log(res.data.allMessages);
+   
+    if(res.status===202){
+       const backendArray=res.data.allMessages;
+      if(message==null||message==undefined||message.length==0){
+        concatedArray=[...backendArray]
+        console.log(concatedArray);
+      }
+      else{
+        concatedArray=message.concat(backendArray)
+        console.log(concatedArray);
+      }
+
+      if(concatedArray.length>10){
+        concatedArray=concatedArray.slice(concatedArray.length-10)
+      }
+      console.log(concatedArray);
+
+      const localstorageMessage=JSON.stringify(concatedArray);
+      localStorage.setItem(`AllGroupMessages-${groupId}`,localstorageMessage);
+
+      displayChats(concatedArray);
+     
+    }
+
+    
+  } catch (error) {
+    document.body.innerHTML+=`<div style="color: red;text-align: center;">
+                                    <h3>${error}</h3>
+                              </div>`
+  }
+}
+
+
+setInterval(setintervalgroupmsg,1000);
+
+
+
