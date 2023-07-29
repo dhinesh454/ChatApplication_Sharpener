@@ -1,7 +1,23 @@
 const express=require('express');
-const app=express();
+
 const bodyParser=require('body-parser');
-const cors=require('cors')
+const cors=require('cors');
+const http =require ("http");
+const socketIO=require('socket.io')
+
+const app=express();
+const server = http.createServer(app);
+const io= socketIO(server,{ cors : { origin : '*'}});
+
+// const io = require('socket.io')(http,{cors:{origin:"*"}});
+
+
+io.on("connection",(socket)=>{
+    console.log('websocket connected-------------------------------------------');
+    socket.on("message",(msg,userName,groupId,userId)=>{
+        socket.broadcast.emit("message",msg,userName,groupId,userId)
+    });
+})
 
 
 require('dotenv').config()
@@ -24,7 +40,9 @@ const UserGroup=require('./models/usergroup');
 
 
 
-app.use(cors());
+app.use(cors({
+    origin:'*'
+}));
 app.use(bodyParser.json());
 
 app.use('/user',userRoutes);
@@ -53,7 +71,7 @@ Message.belongsTo(Group);
 
 sequelize.sync()
 .then((res)=>{
-    app.listen(process.env.PORT,()=>console.log('Server starts....'))
+    server.listen(process.env.PORT,()=>console.log('Server starts....'))
 })
 .catch(err=>console.log(err));
 

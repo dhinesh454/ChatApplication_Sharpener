@@ -1,5 +1,27 @@
 
+const socket = io.connect("http://localhost:3000");
 
+socket.on("message",(msg,userName,groupId,userId) =>{
+
+  console.log('comesSocketes');
+     if(localStorage.getItem('currentGroupId')){
+      let gId=localStorage.getItem('currentGroupId');
+      let token = localStorage.getItem('token')
+      let currentUser=parseJwt(token)
+      if(groupId == gId){
+        const chats=document.getElementById('chat-messages');
+        const newPara = document.createElement('li');
+        newPara.innerText = `${userName}: ${msg}`;
+        chats.appendChild(newPara);
+
+      }
+     }
+});
+
+
+// socket.on('connect',()=>{
+//   console.log('SocketIO connected')
+// })
 
 
 //domcontent
@@ -318,6 +340,10 @@ async function displayChats(allgroupchats){
     chats.innerHTML = '';
     
     console.log(allgroupchats);
+
+    if(allgroupchats.length>10){
+      allgroupchats=allgroupchats.slice(allgroupchats.length-10)
+    }
     
     for (const chat of allgroupchats) {
       const newPara = document.createElement('li');
@@ -349,8 +375,9 @@ async function userMessagestore(event){
     const groupId=localStorage.getItem('currentGroupId');
     const data={message:msg,groupId}
     const res=await axios.post(`http://localhost:3000/chat/sendmessage`,data,{headers:{"Authorization":token}}); 
-     console.log(res.data.newMessage);
-    showpostmsg(res.data.newMessage);
+    const groupMsg=res.data.newMessage;
+    showpostmsg(res.data.newMessage)
+    socket.emit("message",msg,groupMsg.name,groupId,groupMsg.userId);
  
     
   } catch (error) {
@@ -427,7 +454,7 @@ async function setintervalgroupmsg(){
 }
 
 
-setInterval(setintervalgroupmsg,1000);
+// setInterval(setintervalgroupmsg,1000);
 
 
 
