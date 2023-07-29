@@ -1,6 +1,7 @@
 
 const socket = io.connect("http://localhost:3000");
 
+
 socket.on("message",(msg,userName,groupId,userId) =>{
 
   console.log('comesSocketes');
@@ -347,11 +348,40 @@ async function displayChats(allgroupchats){
     
     for (const chat of allgroupchats) {
       const newPara = document.createElement('li');
+
+    if(chat.type == 'text'){
       if (chat.userId === currentUser.userId) {
         newPara.innerText = `You: ${chat.message}`;
       } else {
         newPara.innerText = `${chat.name}: ${chat.message}`;
       }
+
+    }
+
+    else{
+      let fileLink = document.createElement('a');
+
+      fileLink.href=chat.message;
+      fileLink.innerText="click to see(download)";
+    
+      if(chat.userId == currentUser.userId){
+        newPara.appendChild(document.createTextNode(`You:`))
+      }
+    
+      else{
+        newPara.appendChild(document.createTextNode(`${chat.name}:`))
+      }
+    
+     newPara.appendChild(fileLink);
+
+
+
+    }
+
+
+
+
+     
       chats.appendChild(newPara);
     }
     
@@ -369,6 +399,40 @@ async function displayChats(allgroupchats){
 async function userMessagestore(event){
   event.preventDefault();
   try {
+
+     if(document.getElementById('uploadBtn').files[0]){
+
+    const token = localStorage.getItem('token');
+    const groupId=localStorage.getItem('currentGroupId');
+    let file=document.getElementById('uploadBtn').files[0];
+    let formData=new FormData();
+    formData.append("file", file)
+    console.log("------->",formData);
+
+    const headers={
+      "Authorization":token,
+      'Content-Type':'multipart/form-data'
+
+    }
+
+    const res=await axios.post(`http://localhost:3000/chat/upload/${groupId}`,formData,{headers})
+     console.log(res.data.userFile);
+
+   
+    
+    showfilelink(res.data.userFile);
+     }
+
+
+
+
+
+
+
+
+     
+     else{
+      
     const msg=document.getElementById('message-input').value;
     document.getElementById('message-input').value='';
     const token = localStorage.getItem('token');
@@ -378,7 +442,8 @@ async function userMessagestore(event){
     const groupMsg=res.data.newMessage;
     showpostmsg(res.data.newMessage)
     socket.emit("message",msg,groupMsg.name,groupId,groupMsg.userId);
- 
+
+     }
     
   } catch (error) {
     console.log(error);
@@ -386,6 +451,31 @@ async function userMessagestore(event){
   }
 }
 
+
+
+function showfilelink(userFile){
+  const token = localStorage.getItem('token')
+  let currentuser=parseJwt(token);
+  const chats=document.getElementById('chat-messages'); 
+  let newpara=document.createElement('li');
+  let fileLink = document.createElement('a');
+
+  fileLink.href=userFile.message;
+  fileLink.innerText="click to see(download)";
+
+  if(userFile.userId == currentuser.userId){
+    newpara.appendChild(document.createTextNode(`You:`))
+  }
+
+  else{
+    newpara.appendChild(document.createTextNode(`${userFile.name}:`))
+  }
+
+ newpara.appendChild(fileLink);
+ chats.appendChild(newpara)
+
+
+}
 
 
 

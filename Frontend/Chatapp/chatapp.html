@@ -124,9 +124,12 @@
     <div class="container">
     
         <div style="visibility: hidden;" id="chat-messages"></div>
-        <div style="visibility:hidden;" id="user-input">
+        <div id="user-input">
+         <form enctype="multipart/form-data"></form>
             <input type="text" placeholder="Type your message" id="message-input">
+            <input type="file" name="file" id="uploadBtn">
             <button id="send-button" class="btn btn-success" onclick="userMessagestore(event)">Send</button>
+        </form>
         </div>
     
     </div>
