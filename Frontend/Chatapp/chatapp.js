@@ -77,7 +77,7 @@ function parseJwt (token) {
 
 ///createnewgroup
 async function createNewGroup(){
-  const groupname=prompt("Enter the name Of group:")
+  const groupname=prompt("Enter the New Group Name:")
 try {
   if(groupname){
     const token=localStorage.getItem('token');
@@ -495,56 +495,6 @@ function showpostmsg(newMsg){
 }
  
 
-
-
-
-
-async function setintervalgroupmsg(){
-    let concatedArray;
-    const token=localStorage.getItem('token');
-    const groupId=localStorage.getItem('currentGroupId');
-    let message=JSON.parse(localStorage.getItem(`AllGroupMessages-${groupId}`));
-    console.log(message);
-    if(message==null||message.length==0||message==undefined) lastmessageid=0;
-    else lastmessageid=message[message.length-1].id
-
-  try {
-    const res=await axios.get(`http://localhost:3000/chat/getmessages/${groupId}?lastmessageid=${lastmessageid}`,{headers:{"Authorization":token}});
-    console.log(res.data.allMessages);
-   
-    if(res.status===202){
-       const backendArray=res.data.allMessages;
-      if(message==null||message==undefined||message.length==0){
-        concatedArray=[...backendArray]
-        console.log(concatedArray);
-      }
-      else{
-        concatedArray=message.concat(backendArray)
-        console.log(concatedArray);
-      }
-
-      if(concatedArray.length>10){
-        concatedArray=concatedArray.slice(concatedArray.length-10)
-      }
-      console.log(concatedArray);
-
-      const localstorageMessage=JSON.stringify(concatedArray);
-      localStorage.setItem(`AllGroupMessages-${groupId}`,localstorageMessage);
-
-      displayChats(concatedArray);
-     
-    }
-
-    
-  } catch (error) {
-    document.body.innerHTML+=`<div style="color: red;text-align: center;">
-                                    <h3>${error}</h3>
-                              </div>`
-  }
-}
-
-
-// setInterval(setintervalgroupmsg,1000);
 
 
 

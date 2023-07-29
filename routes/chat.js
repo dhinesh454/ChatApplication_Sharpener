@@ -9,7 +9,6 @@ const upload=multer();
 
 routes.post('/sendmessage',userAuthenticate.authenticate,Userchat.postMesage);
 routes.get('/:groupId',userAuthenticate.authenticate,Userchat.getMessages);
-routes.get('/getmessages/:groupId',userAuthenticate.authenticate,Userchat.setIntervalgetmessages)
 routes.post('/upload/:groupId',userAuthenticate.authenticate,upload.single('file'),Userchat.uploadFile)
 
 

@@ -112,24 +112,5 @@ const key=`uploads/${id}-${file.originalname}`
   }
   
 
-const setIntervalgetmessages=async (req,res,next)=>{
-    const msgId = req.query.lastmessageid;
-    const groupId=req.params.groupId;
-    console.log(msgId,groupId);
-    try {
-        const data=await Message.findAll({
-            where:{groupId,
-                id:{
-                    [Op.gt]:msgId
-                }
-            }
-        });
-        res.status(202).json({allMessages:data,success:true})
-        
-    } catch (error) {
-        console.log(JSON.stringify(error));
-        res.status(500).json({error})
-    }
-}
 
-module.exports={postMesage,getMessages,setIntervalgetmessages,uploadToS3,uploadFile}
+module.exports={postMesage,getMessages,uploadToS3,uploadFile}
