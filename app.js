@@ -17,6 +17,10 @@ io.on("connection",(socket)=>{
     socket.on("message",(msg,userName,groupId,userId)=>{
         socket.broadcast.emit("message",msg,userName,groupId,userId)
     });
+    socket.on("file",(message,userName,groupId,userId)=>{
+        socket.broadcast.emit("file",message,userName,groupId,userId)
+
+    })
 })
 
 

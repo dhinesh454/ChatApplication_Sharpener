@@ -19,6 +19,27 @@ socket.on("message",(msg,userName,groupId,userId) =>{
      }
 });
 
+socket.on("file",(message,userName,groupId,userId) => {
+  if(localStorage.getItem('currentGroupId')){
+    let gId=localStorage.getItem('currentGroupId');
+    const token = localStorage.getItem('token')
+    let currentuser=parseJwt(token);
+    const chats=document.getElementById('chat-messages'); 
+
+
+    let newpara=document.createElement('li');
+    let fileLink = document.createElement('a');
+    fileLink.href=message;
+    fileLink.innerText="click to see(download)";
+
+    newpara.appendChild(document.createTextNode(`${userName}:`))
+    newpara.appendChild(fileLink);
+   chats.appendChild(newpara)
+  
+  
+  }
+})
+
 
 // socket.on('connect',()=>{
 //   console.log('SocketIO connected')
@@ -344,12 +365,10 @@ async function displayChats(allgroupchats){
 
     if(allgroupchats.length>10){
       allgroupchats=allgroupchats.slice(allgroupchats.length-10)
-    }
-    
+    }  
     for (const chat of allgroupchats) {
       const newPara = document.createElement('li');
-
-    if(chat.type == 'text'){
+   if(chat.type == 'text'){
       if (chat.userId === currentUser.userId) {
         newPara.innerText = `You: ${chat.message}`;
       } else {
@@ -360,27 +379,17 @@ async function displayChats(allgroupchats){
 
     else{
       let fileLink = document.createElement('a');
-
       fileLink.href=chat.message;
       fileLink.innerText="click to see(download)";
     
       if(chat.userId == currentUser.userId){
         newPara.appendChild(document.createTextNode(`You:`))
       }
-    
       else{
         newPara.appendChild(document.createTextNode(`${chat.name}:`))
-      }
-    
-     newPara.appendChild(fileLink);
-
-
-
+      } 
+      newPara.appendChild(fileLink);
     }
-
-
-
-
      
       chats.appendChild(newPara);
     }
@@ -416,21 +425,12 @@ async function userMessagestore(event){
     }
 
     const res=await axios.post(`http://localhost:3000/chat/upload/${groupId}`,formData,{headers})
-     console.log(res.data.userFile);
+    console.log(res.data.userFile);
 
-   
-    
     showfilelink(res.data.userFile);
+    socket.emit("file",res.data.userFile.message,res.data.userFile.name,groupId,res.data.userFile.userId)
      }
-
-
-
-
-
-
-
-
-     
+   
      else{
       
     const msg=document.getElementById('message-input').value;

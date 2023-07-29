@@ -25,16 +25,17 @@
 
             
         }
-        input{
-           position: relative;
-           margin-left: 50px;
+        #message-input{
+          position: relative;
+          left: 0;
            height: 35px;
-           width:70%;
+           width:60%;
            margin-top: 5px;
            border:green;
 
         }
     .btn-success{
+         
             height:35px;
             width:100px;
              margin-bottom:5px ;
@@ -124,7 +125,7 @@
     <div class="container">
     
         <div style="visibility: hidden;" id="chat-messages"></div>
-        <div id="user-input">
+        <div style="visibility: hidden;" id="user-input">
          <form enctype="multipart/form-data"></form>
             <input type="text" placeholder="Type your message" id="message-input">
             <input type="file" name="file" id="uploadBtn">
